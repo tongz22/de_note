@@ -114,3 +114,35 @@ docker run -it \
   --name pgadmin \
   dpage/pgadmin4
 ```
+## Convert jupyter notebook to script
+```bash
+jupyter nbconvert --t=script file_name.ipynb
+```
+## Ingest data through code
+```bash
+URL="https://nyc-tlc.s3.amazonaws.com/trip+data/yellow_tripdata_2022-01.parquet"
+python ingest_data.py \
+  --user=root \
+  --password=root \
+  --host=localhost\
+  --port=5432 \
+  --db=ny_taxi \
+  --table_name=yellow_taxi_trips \
+  --url=${URL}
+```
+## Ingest data to the docker
+```bash
+docker build -t taxi_ingest:v001 .
+```
+```bash
+docker run -it \
+  --network=pg-network \
+  taxi_ingest:v001 \
+  --user=root \
+  --password=root \
+  --host=pg-database\
+  --port=5432 \
+  --db=ny_taxi \
+  --table_name=yellow_taxi_trips \
+  --url=${URL}
+```
